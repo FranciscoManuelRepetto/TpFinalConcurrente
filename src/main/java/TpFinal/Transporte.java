@@ -18,8 +18,8 @@ import java.util.logging.Logger;
  */
 public class Transporte {
 
-    private CyclicBarrier barrera;
-    private int cantEnTransporte;
+    private CyclicBarrier barrera; //Barrera para subir al transporte todos juntos
+    private int cantEnTransporte; //Cantidad de personas que pueden ir en el transporte
     private Semaphore esperaConductor = new Semaphore(0);
     private Semaphore semTerminalA = new Semaphore(0);
     private Semaphore semTerminalB = new Semaphore(0);
@@ -66,7 +66,7 @@ public class Transporte {
     }
     
     public void esperarAvanzar() throws InterruptedException{
-        esperaConductor.acquire(cantEnTransporte);
+        esperaConductor.acquire(cantEnTransporte);//Conductor  espera a que lleguen los pasajeros
     }
        
     public boolean esperandoTerminalA(){

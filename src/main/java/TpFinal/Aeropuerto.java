@@ -15,21 +15,20 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
  */
 public class Aeropuerto {
 
-    private AtomicReferenceArray vuelos;
-    private ConcurrentHashMap horariosVuelos = new ConcurrentHashMap();
-    private PuestoInforme puestoInfo;
-    private AvisosGuardia avisosGu = new AvisosGuardia();
-    private Transporte transporte = new Transporte(3);
-    private ConcurrentHashMap terminales = new ConcurrentHashMap();
+    private AtomicReferenceArray vuelos; //Arreglo con todos los vuelos cargados
+    private ConcurrentHashMap horariosVuelos = new ConcurrentHashMap(); //Hash que relaciona como clave horarios con los vuelos para controlar embarques
+    private PuestoInforme puestoInfo;  
+    private AvisosGuardia avisosGu = new AvisosGuardia(); //Recurso compartido entre pasajero y guardia para avisar que hay lugar en la fila
+    private Transporte transporte = new Transporte(3);//Transporte utilizado para ir a las terminales
+    private ConcurrentHashMap terminales = new ConcurrentHashMap();//Hash que relaciona como clave las letras de terminales con el objeto
     private Semaphore semHora = new Semaphore(1);
-    private int horaActual;
+    private int horaActual;//Para saber si el aeropuerto esta abierto y para los embarques
 
     public Aeropuerto(int cantidadAero) {
         //Le llega por parametro la cantidad de aerolineas  
         horaActual = 12;
-        cargarVuelos(cantidadAero);
-        //CAMBIAR EL NOMBRE
-        crearHilos();
+        cargarVuelos(cantidadAero);//Por cada aerolonia crea un vuelo
+        crearEmpleados();
         cargarTerminales();
     }
 
@@ -51,12 +50,11 @@ public class Aeropuerto {
                 arreglo.add(vuelo);
                 horariosVuelos.put(horario, arreglo);
             }
-            horariosVuelos.put(horario, vuelo);
         }
         puestoInfo = new PuestoInforme(cantidadAero);
     }
 
-    private void crearHilos() {
+    private void crearEmpleados() {
         //Crea al guardia de los puestos de atencion
         Thread guardia = new Thread(new Guardia(avisosGu));
         guardia.start();
@@ -74,6 +72,7 @@ public class Aeropuerto {
     }
 
     public boolean abierto() throws InterruptedException {
+        //Retorna si el aeropuerto esta abierto o no
         semHora.acquire();
         boolean abierto = (horaActual >= 6 && horaActual <= 22);
         semHora.release();
@@ -129,22 +128,18 @@ public class Aeropuerto {
 
     public void avisarAVuelos() {
         ArrayList list;
-        //Avisa a los buelos de la hora anterior que ya no hay que embarcar
-        if (horariosVuelos.get(horaActual-1) != null) {
+        //Avisa a los vuelos de la hora anterior que ya no hay que embarcar
+        if (horariosVuelos.get(horaActual - 1) != null) {
             list = (ArrayList) horariosVuelos.get(horaActual - 1);
-            if (list != null) {
-                for (int i = 0; i < list.size(); i++) {
-                    ((Vuelo) list.get(i)).noEsHoraDeEmbarcar();
-                }
+            for (int i = 0; i < list.size(); i++) {
+                ((Vuelo) list.get(i)).noEsHoraDeEmbarcar();
             }
         }
         //Avisa a los vuelos de la hora actual que hay que embarcar
         if (horariosVuelos.get(horaActual) != null) {
             list = (ArrayList) horariosVuelos.get(horaActual);
-            if (list != null) {
-                for (int i = 0; i < list.size(); i++) {
-                    ((Vuelo) list.get(i)).esHoraDeEmbarcar();
-                }
+            for (int i = 0; i < list.size(); i++) {
+                ((Vuelo) list.get(i)).esHoraDeEmbarcar();
             }
         }
         semHora.release();

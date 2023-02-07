@@ -18,7 +18,7 @@ public class Hall {
     
     private int cantGente = 0;
     private int idActual = -1;
-    private LinkedBlockingQueue orden = new LinkedBlockingQueue();
+    private LinkedBlockingQueue orden = new LinkedBlockingQueue();//Cola que lleva el orden de los pasajeros que esperan
     private Lock esperar = new ReentrantLock();
     private Condition condicionId = esperar.newCondition();
     private Semaphore mutex = new Semaphore(1);
@@ -26,7 +26,7 @@ public class Hall {
     public boolean genteEsperando() throws InterruptedException {
       boolean hayGente = false;
       mutex.acquire();
-       hayGente = cantGente != 0;
+       hayGente = (cantGente != 0);
        mutex.release();
        return hayGente;
     }

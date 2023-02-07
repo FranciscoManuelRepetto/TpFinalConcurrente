@@ -19,7 +19,9 @@ import java.util.logging.Logger;
  * @author Usuario
  */
 public class probando {
-
+ public static final String ROJO = "\u001B[31m";
+    
+    
     public static void main(String[] args) {
       /*  Recurso recurso = new Recurso();
         AtomicInteger num = new AtomicInteger(10);
@@ -51,12 +53,14 @@ public class probando {
             despjiji.start();
               } catch (InterruptedException ex) {
             Logger.getLogger(probando.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
         ArrayList list = new ArrayList();
         list.add("papa1");
         list.add("papa2");
         list.add("papa3");
         System.out.println((String)list.get(0));
+*/
+        System.out.println("\u001B[31mOLA PECHI");
     }
 
 }

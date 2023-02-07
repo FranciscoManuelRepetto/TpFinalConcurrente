@@ -28,11 +28,13 @@ public class Pasajero implements Runnable {
         System.out.println("Pasajero " + id + " llego al aeropuerto");
         try {
             if (aero.abierto()) {
+                //Va al puesto de informes que le genera un pasaje aleatorio y le dice a que puesto de atencion ir
                 buscarCheckIn();
+                //Va al puesto de atencion para que le de la terminal a la que tiene que ir
                 hacerCheckIn();
                 //Toma el transporte y espera para llegar a la terminal
                 tomarTransporte();
-                //Embarca
+                //Llega a la terminal y va al free shop si quiere o sino embarca
                 embarcar();
             } else {
                 System.out.println(Thread.currentThread().getName() + "el aeropuerto esta CERRADO");
@@ -70,9 +72,12 @@ public class Pasajero implements Runnable {
     }
 
     private void tomarTransporte() throws InterruptedException {
+        //Espera para tomar el transporte
         aero.tomarTransporte();
         System.out.println("Pasajero " + id + " se subio al transporte");
+        //Espera que el conductor le avise que ya se puede bajar
         aero.bajarseTransporte(pasaje);
+        //Llego a la terminal 
         System.out.println("Pasajero " + id + " se bajo en la Terminal " + pasaje.getLetraTerminal());
     }
 
@@ -85,7 +90,8 @@ public class Pasajero implements Runnable {
         } else {
             System.out.println("Pasajero " + id + " no quiere ir al freeshop ");
         }
-        System.out.println("Pasajero " + id + " esperando a embarcar hasta las "+pasaje.getVuelo().getHoraDespegue());
+        //Espera a que sea la hora para embarcar 
+        System.out.println("Pasajero " + id + " esperando a embarcar hasta las " + pasaje.getVuelo().getHoraDespegue());
         pasaje.getVuelo().esperarEmbarcar();
         System.out.println("Pasajero " + id + " despego");
     }

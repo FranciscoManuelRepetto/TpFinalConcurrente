@@ -31,6 +31,7 @@ public class PuestoInforme {
     }
     
     public void preguntarPuestoAten(Pasaje pasaje,int numPas){
+        //Le asigna el puesto de atencion al pasajero en el pasaje
         try {
             atencion.lock();
             System.out.println("PUESTO DE INFORMES: atendiendo al Pasajero "+numPas);
